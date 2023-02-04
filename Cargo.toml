@@ -11,3 +11,6 @@ name = "rock_paper"
 
 [[bin]]
 name = "rucksack"
+
+[[bin]]
+name = "camp_cleanup"
