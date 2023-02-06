@@ -59,14 +59,15 @@ fn part1() {
 
 fn convert_to_stacks(grid: &mut Vec<Vec<String>>) -> Vec<Vec<String>> {
     let mut stacks = vec![vec![]; 9];
+
     for row in grid.iter().rev() {
         for (i, container) in row.iter().enumerate() {
-            // println!("E: {}, {}", i, container);
             if container != "   " {
                 stacks[i].push(container.to_owned());
             }
         }
     }
+
     stacks
 }
 
@@ -100,8 +101,37 @@ fn parse_string(s: &str) -> Vec<String> {
 
 // ---------------- Part 2 --------------------
 
-fn part2() {}
+fn part2() {
+    let mut lines = std::io::stdin()
+        .lines()
+        .map(|line| line.expect("String expected"))
+        .into_iter();
+
+    let mut grid = parse_grid(lines.by_ref());
+    let mut stacks = convert_to_stacks(&mut grid);
+
+    // Skip empty line
+    lines.next();
+
+    let instructions = lines
+        .map(|line| line.parse::<Instruction>().unwrap())
+        .collect::<Vec<_>>();
+
+    for instruction in instructions {
+        let containers_from = &mut stacks[instruction.from_stack - 1];
+        let mut tail =
+            containers_from.split_off(containers_from.len().saturating_sub(instruction.count));
+        stacks[instruction.to_stack - 1].append(&mut tail);
+    }
+
+    let mut result = String::new();
+    for stack in &mut stacks {
+        result.push_str(&stack.pop().unwrap().trim_matches(|c| c == '[' || c == ']'));
+    }
+
+    println!("Result: {}", result);
+}
 
 fn main() {
-    part1();
+    part2();
 }
