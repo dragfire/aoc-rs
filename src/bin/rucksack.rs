@@ -9,9 +9,7 @@ impl Rucksack {
     fn common_item_priority(&self) -> u32 {
         let contents = &self.0;
 
-        let mid = contents.len() / 2;
-        let first_compartment = &contents[..mid];
-        let second_compartment = &contents[mid..];
+        let (first_compartment, second_compartment) = contents.split_at(contents.len() / 2);
         let common_item = Rucksack::common(first_compartment, second_compartment);
 
         priority(common_item)
